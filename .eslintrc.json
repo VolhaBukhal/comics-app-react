@@ -6,7 +6,10 @@
     "extends": [
         "plugin:react/recommended",
         "airbnb",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "prettier",
+        "prettier/prettier",
+        "plugin:prettier/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -18,7 +21,8 @@
     },
     "plugins": [
         "react",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "react-hooks"
     ],
     "settings": {
         "import/resolver": {
@@ -34,6 +38,10 @@
         "@typescript-eslint/no-shadow": ["error"],
         //Force all functions have explicit return type
         // "@typescript-eslint/explicit-function-return-type": ["error", {"allowExpressions": true}],
-        "max-len": ["warn", {"code": 100}]
+        "max-len": ["warn", {"code": 100}],
+        "react-hooks/rules-of-hooks":"error",
+        "react-hooks/exhaustive-deps":"warn",
+        "import/prefer-default-export":"off",
+        "react/prop-types":"off"
     }
 }
