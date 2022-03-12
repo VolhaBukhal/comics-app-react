@@ -44,6 +44,6 @@
         "react/prop-types":"off",
         "prettier/prettier": [ "error", { "endOfLine": "auto"} ],
         "no-underscore-dangle": ["error", { "allowAfterThis": true }],
-        "class-methods-use-this": ["error", { "enforceForClassFields": false }]
+        "class-methods-use-this": ["error", { "enforceForClassFields": false}]
     }
 }

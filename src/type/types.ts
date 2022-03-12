@@ -80,6 +80,14 @@ interface IUrlsItem {
     url: string
 }
 
+export interface MyChar {
+    name: string
+    description: string
+    thumbnail: string
+    homepage: string
+    wiki: string
+}
+
 // {
 //   "code": 200,
 //   "status": "Ok",

@@ -10,7 +10,7 @@ function App() {
         <div className="app">
             <AppHeader />
             <main>
-                <RandomChar />
+                <RandomChar text="try it" />
                 <div className="char__content">
                     <CharList />
                     <CharInfo />
