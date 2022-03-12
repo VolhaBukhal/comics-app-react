@@ -37,11 +37,13 @@
         "@typescript-eslint/no-shadow": ["error"],
         //Force all functions have explicit return type
         // "@typescript-eslint/explicit-function-return-type": ["error", {"allowExpressions": true}],
-        "max-len": ["warn", {"code": 100}],
+        "max-len": ["warn", {"code": 120}],
         "react-hooks/rules-of-hooks":"error",
         "react-hooks/exhaustive-deps":"warn",
         "import/prefer-default-export":"off",
         "react/prop-types":"off",
-        "prettier/prettier": [ "error", { "endOfLine": "auto"} ]
+        "prettier/prettier": [ "error", { "endOfLine": "auto"} ],
+        "no-underscore-dangle": ["error", { "allowAfterThis": true }],
+        "class-methods-use-this": ["error", { "enforceForClassFields": false }]
     }
 }

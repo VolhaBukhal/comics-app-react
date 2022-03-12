@@ -1,6 +1,5 @@
 import React from 'react'
 import decoration from 'assets/img/vision.png'
-
 import AppHeader from './components/appHeader/AppHeader'
 import RandomChar from './components/randomChar/RandomChar'
 import CharList from './components/charList/CharList'
