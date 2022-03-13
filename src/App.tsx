@@ -12,7 +12,7 @@ function App() {
             <main>
                 <RandomChar text="try it" />
                 <div className="char__content">
-                    <CharList />
+                    <CharList text="" />
                     <CharInfo />
                 </div>
                 <img className="bg-decoration" src={decoration} alt="vision" />

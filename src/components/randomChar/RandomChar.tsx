@@ -3,24 +3,22 @@ import './randomChar.scss'
 import mjolnir from 'assets/img/mjolnir.png'
 import MarvelService from 'services/MarvelService'
 import { MyChar } from 'type/types'
-import ClipLoader from 'react-spinners/ClipLoader'
-import { css } from '@emotion/react'
-import ErrorMessage from '../errorMessage'
+import Spinner from '../spinner/Spinner'
 
-const override = css`
-    display: block;
-    margin: 0 auto;
-`
+import ErrorMessage from '../errorMessage'
 
 function View({ char, cutDescription }: MyFProps) {
     const { name, description, thumbnail, homepage, wiki } = char
+    const callBack = !!(thumbnail.indexOf('image_not_available') !== -1)
 
     return (
         <div className="randomchar__block">
             <img
                 src={thumbnail}
                 alt="Random character"
-                className="randomchar__img"
+                className={
+                    callBack ? 'randomchar__img_fallback' : 'randomchar__img'
+                }
             />
 
             <div className="randomchar__info">
@@ -63,6 +61,7 @@ class RandomChar extends Component<MyProps, MyState> {
         super(props)
         this.state = {
             char: {
+                id: 0,
                 name: '',
                 description: '',
                 thumbnail: '',
@@ -72,6 +71,12 @@ class RandomChar extends Component<MyProps, MyState> {
             loading: true,
             error: false,
         }
+        console.log('constructor')
+    }
+
+    componentDidMount() {
+        console.log('mount')
+
         this.updateChar()
     }
 
@@ -88,11 +93,11 @@ class RandomChar extends Component<MyProps, MyState> {
 
     updateChar = () => {
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
+        console.log(id)
         this.marvelData
             .getOneCharacter(id)
             .then((result) => {
-                const char = this.marvelData.transformCharacter(result)
-                this.onCharLoaded(char)
+                this.onCharLoaded(result)
             })
             .catch(this.onError)
     }
@@ -109,17 +114,11 @@ class RandomChar extends Component<MyProps, MyState> {
     }
 
     render() {
+        console.log('render')
         const { char, loading, error } = this.state
         const { text } = this.props
         const errorMessage = error ? <ErrorMessage /> : null
-        const spinner = loading ? (
-            <ClipLoader
-                color="darkred"
-                loading={loading}
-                size={100}
-                css={override}
-            />
-        ) : null
+        const spinner = loading ? <Spinner loading={loading} /> : null
         const content = !(loading || error) ? (
             <View char={char} cutDescription={this.cutDescription} />
         ) : null
@@ -146,7 +145,11 @@ class RandomChar extends Component<MyProps, MyState> {
                         Do you want to get to know him better?
                     </p>
                     <p className="randomchar__title">Or choose another one</p>
-                    <button type="button" className="button button__main">
+                    <button
+                        type="button"
+                        className="button button__main"
+                        onClick={this.updateChar}
+                    >
                         <div className="inner">{text}</div>
                     </button>
                     <img
