@@ -71,12 +71,9 @@ class RandomChar extends Component<MyProps, MyState> {
             loading: true,
             error: false,
         }
-        console.log('constructor')
     }
 
     componentDidMount() {
-        console.log('mount')
-
         this.updateChar()
     }
 
@@ -91,9 +88,13 @@ class RandomChar extends Component<MyProps, MyState> {
         this.setState({ char, loading: false })
     }
 
+    onCharLoading = () => {
+        this.setState({ loading: true })
+    }
+
     updateChar = () => {
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
-        console.log(id)
+        this.onCharLoading()
         this.marvelData
             .getOneCharacter(id)
             .then((result) => {
@@ -114,7 +115,6 @@ class RandomChar extends Component<MyProps, MyState> {
     }
 
     render() {
-        console.log('render')
         const { char, loading, error } = this.state
         const { text } = this.props
         const errorMessage = error ? <ErrorMessage /> : null
