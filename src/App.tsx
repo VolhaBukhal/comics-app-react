@@ -1,6 +1,5 @@
 import React from 'react'
 import decoration from 'assets/img/vision.png'
-
 import AppHeader from './components/appHeader/AppHeader'
 import RandomChar from './components/randomChar/RandomChar'
 import CharList from './components/charList/CharList'
@@ -11,9 +10,9 @@ function App() {
         <div className="app">
             <AppHeader />
             <main>
-                <RandomChar />
+                <RandomChar text="try it" />
                 <div className="char__content">
-                    <CharList />
+                    <CharList text="" />
                     <CharInfo />
                 </div>
                 <img className="bg-decoration" src={decoration} alt="vision" />
