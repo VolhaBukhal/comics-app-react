@@ -2,10 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './style/style.scss'
 import MarvelService from 'services'
-import { ICharactor } from 'type/types'
 import App from './App'
 
-const marvelData = new MarvelService()
+// const marvelData = new MarvelService()
 
 // const getData = async () => {
 //     const data: ICharactor = await marvelData.getAllcharacters()
