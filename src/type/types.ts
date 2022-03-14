@@ -27,7 +27,7 @@ export interface IMainCharactorInfo {
     urls: IUrlsItem[]
 }
 
-interface IComics {
+export interface IComics {
     available: number
     collectionURI: string
     items: IComicsItem[]
@@ -54,8 +54,8 @@ interface IEvents {
     returned: number
 }
 
-interface IComicsItem {
-    resourceURI: string
+export interface IComicsItem {
+    resourceURL: string
     name: string
 }
 
@@ -87,6 +87,7 @@ export interface MyChar {
     thumbnail: string
     homepage: string
     wiki: string
+    comics?: IComics
 }
 
 // {

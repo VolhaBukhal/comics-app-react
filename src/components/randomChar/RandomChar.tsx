@@ -45,19 +45,19 @@ type MyState = {
     error: boolean
 }
 
-type MyProps = {
-    text: string
-}
+// type MyProps = {
+//     text: string
+// }
 
 type MyFProps = {
     char: MyChar
     cutDescription: (text: string) => string
 }
 
-class RandomChar extends Component<MyProps, MyState> {
+class RandomChar extends Component<unknown, MyState> {
     marvelData = new MarvelService()
 
-    constructor(props: MyProps) {
+    constructor(props = {}) {
         super(props)
         this.state = {
             char: {
@@ -116,7 +116,6 @@ class RandomChar extends Component<MyProps, MyState> {
 
     render() {
         const { char, loading, error } = this.state
-        const { text } = this.props
         const errorMessage = error ? <ErrorMessage /> : null
         const spinner = loading ? <Spinner loading={loading} /> : null
         const content = !(loading || error) ? (
@@ -150,7 +149,7 @@ class RandomChar extends Component<MyProps, MyState> {
                         className="button button__main"
                         onClick={this.updateChar}
                     >
-                        <div className="inner">{text}</div>
+                        <div className="inner" />
                     </button>
                     <img
                         src={mjolnir}

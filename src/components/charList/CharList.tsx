@@ -6,7 +6,7 @@ import ErrorMessage from '../errorMessage/ErrorMessage'
 import Spinner from '../spinner/Spinner'
 
 type MyProps = {
-    text: string
+    onCharSelected: (id: number) => void
 }
 
 type MyState = {
@@ -54,12 +54,18 @@ class CharList extends Component<MyProps, MyState> {
     }
 
     renderItems = (arr: MyChar[]) => {
+        const { onCharSelected } = this.props
         return arr.map((item) => {
             const fallBack = !!(
                 item.thumbnail.indexOf('image_not_available') !== -1
             )
             return (
-                <li key={item.id} className="char__item">
+                <li
+                    key={item.id}
+                    className="char__item"
+                    onClick={() => onCharSelected(item.id)}
+                    role="presentation"
+                >
                     {/* <li className="char__item char__item_selected"></li> */}
                     <img
                         src={item.thumbnail}
@@ -78,7 +84,7 @@ class CharList extends Component<MyProps, MyState> {
 
     render() {
         const { chars, loading, error } = this.state
-        const { text } = this.props
+        const { onCharSelected } = this.props
         const items = this.renderItems(chars)
         const errorMessage = error ? <ErrorMessage /> : null
         const spinner = loading ? <Spinner loading={loading} /> : null
@@ -89,7 +95,6 @@ class CharList extends Component<MyProps, MyState> {
                     {errorMessage}
                     {spinner}
                     {content}
-                    {text}
                 </ul>
                 <button
                     type="button"

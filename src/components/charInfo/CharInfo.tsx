@@ -1,69 +1,157 @@
-import React from 'react'
+import React, { Component } from 'react'
 import './charInfo.scss'
 import thor from 'assets/img/thor.jpeg'
+import { IMainCharactorInfo, MyChar, IComicsItem } from 'type/types'
+import MarvelService from 'services/MarvelService'
+import ErrorMessage from '../errorMessage/ErrorMessage'
+import Spinner from '../spinner/Spinner'
+import Sceleon from '../skeleton/Skeleton'
 
-function CharInfo() {
+type MyViewProps = {
+    char: MyChar
+}
+function View({ char }: MyViewProps) {
+    const { name, description, thumbnail, homepage, wiki, comics } = char
+    const fallBack = !!(thumbnail.indexOf('image_not_available') !== -1)
+
+    const renderComicsItems = (arr: IComicsItem[]) => {
+        if (arr) {
+            return arr.slice(0, 10).map((item, i) => (
+                <li key={i} className="char__comics-item">
+                    {item.name}
+                </li>
+            ))
+        }
+        return <li>There is no comics.</li>
+    }
     return (
-        <div className="char__info">
+        <>
             <div className="char__basics">
-                <img src={thor} alt="abyss" />
+                <img
+                    src={thumbnail}
+                    alt="abyss"
+                    style={
+                        fallBack
+                            ? { objectFit: 'unset' }
+                            : { objectFit: 'cover' }
+                    }
+                />
                 <div>
-                    <div className="char__info-name">thor</div>
+                    <div className="char__info-name">{name}</div>
                     <div className="char__btns">
-                        <a
-                            href="https://github.com"
-                            className="button button__main"
-                        >
+                        <a href={homepage} className="button button__main">
                             <div className="inner">homepage</div>
                         </a>
-                        <a
-                            href="https://github.com"
-                            className="button button__secondary"
-                        >
+                        <a href={wiki} className="button button__secondary">
                             <div className="inner">Wiki</div>
                         </a>
                     </div>
                 </div>
             </div>
-            <div className="char__descr">
-                In Norse mythology, Loki is a god or jötunn (or both). Loki is
-                the son of Fárbauti and Laufey, and the brother of Helblindi and
-                Býleistr. By the jötunn Angrboða, Loki is the father of Hel, the
-                wolf Fenrir, and the world serpent Jörmungandr. By Sigyn, Loki
-                is the father of Nari and/or Narfi and with the stallion
-                Svaðilfari as the father, Loki gave birth—in the form of a
-                mare—to the eight-legged horse Sleipnir. In addition, Loki is
-                referred to as the father of Váli in the Prose Edda.
-            </div>
+            <div className="char__descr">{description}</div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
-                <li className="char__comics-item">
-                    All-Winners Squad: Band of Heroes (2011) #3
-                </li>
-                <li className="char__comics-item">Alpha Flight (1983) #50</li>
-                <li className="char__comics-item">
-                    Amazing Spider-Man (1999) #503
-                </li>
-                <li className="char__comics-item">
-                    Amazing Spider-Man (1999) #504
-                </li>
-                <li className="char__comics-item">
-                    AMAZING SPIDER-MAN VOL. 7: BOOK OF EZEKIEL TPB (Trade
-                    Paperback)
-                </li>
-                <li className="char__comics-item">
-                    Amazing-Spider-Man: Worldwide Vol. 8 (Trade Paperback)
-                </li>
-                <li className="char__comics-item">
-                    Asgardians Of The Galaxy Vol. 2: War Of The Realms (Trade
-                    Paperback)
-                </li>
-                <li className="char__comics-item">Vengeance (2011) #4</li>
-                <li className="char__comics-item">Avengers (1963) #1</li>
-                <li className="char__comics-item">Avengers (1996) #1</li>
+                {comics ? renderComicsItems(comics.items) : null}
             </ul>
-        </div>
+        </>
     )
+}
+
+type MyProps = {
+    charId: number
+}
+
+type MyState = {
+    char: MyChar
+    loading: boolean
+    error: boolean
+}
+
+class CharInfo extends Component<MyProps, MyState> {
+    marvelData = new MarvelService()
+
+    constructor(props: MyProps) {
+        super(props)
+        const { charId } = this.props
+        this.state = {
+            char: {
+                id: charId,
+                name: '',
+                description: '',
+                thumbnail: '',
+                homepage: '',
+                wiki: '',
+                comics: {
+                    available: 0,
+                    collectionURI: '',
+                    items: [],
+                    returned: 0,
+                },
+            },
+            loading: false,
+            error: false,
+        }
+    }
+
+    componentDidMount() {
+        this.updateChar()
+    }
+
+    componentDidUpdate(prevProps: MyProps) {
+        const { charId } = this.props
+        if (charId !== prevProps.charId) {
+            this.updateChar()
+        }
+    }
+
+    onError = () => {
+        this.setState({
+            loading: false,
+            error: true,
+        })
+    }
+
+    onCharLoaded = (char: MyChar) => {
+        this.setState({ char, loading: false })
+    }
+
+    onCharLoading = () => {
+        this.setState({ loading: true })
+    }
+
+    updateChar = () => {
+        const { charId } = this.props
+        if (!charId) {
+            return
+        }
+        this.onCharLoading()
+        this.marvelData
+            .getOneCharacter(charId)
+            .then((result) => {
+                this.onCharLoaded(result)
+            })
+            .catch(this.onError)
+    }
+
+    render() {
+        const { char, loading, error } = this.state
+        const charExist = !!char.id
+        const skeleton = charExist || loading || error ? null : <Sceleon />
+        const errorMessage = error ? <ErrorMessage /> : null
+        const spinner = loading ? <Spinner loading={loading} /> : null
+        const content = !(loading || error || !charExist) ? (
+            <View char={char} />
+        ) : null
+
+        return (
+            <div className="char__info">
+                {skeleton}
+                {errorMessage}
+                {spinner}
+                {content}
+            </div>
+        )
+    }
 }
 
 export default CharInfo
