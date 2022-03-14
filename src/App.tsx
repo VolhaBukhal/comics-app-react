@@ -4,6 +4,7 @@ import AppHeader from './components/appHeader/AppHeader'
 import RandomChar from './components/randomChar/RandomChar'
 import CharList from './components/charList/CharList'
 import CharInfo from './components/charInfo'
+import ErrorBoundary from './components/errorBoundary'
 
 type MyState = {
     selectedChar: number
@@ -18,9 +19,7 @@ class App extends Component<unknown, MyState> {
     }
 
     onCharSelected = (id: number) => {
-        const { selectedChar } = this.state
         this.setState({ selectedChar: id })
-        console.log('from App:', id)
     }
 
     render() {
@@ -29,10 +28,14 @@ class App extends Component<unknown, MyState> {
             <div className="app">
                 <AppHeader />
                 <main>
-                    <RandomChar text="try it" />
+                    <ErrorBoundary>
+                        <RandomChar />
+                    </ErrorBoundary>
                     <div className="char__content">
                         <CharList onCharSelected={this.onCharSelected} />
-                        <CharInfo charId={selectedChar} />
+                        <ErrorBoundary>
+                            <CharInfo charId={selectedChar} />
+                        </ErrorBoundary>
                     </div>
                     <img
                         className="bg-decoration"
