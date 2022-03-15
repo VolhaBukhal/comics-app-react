@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import './charList.scss'
 import { MyChar } from 'type/types'
 import MarvelService from 'services/MarvelService'
@@ -19,6 +19,8 @@ type MyState = {
 }
 class CharList extends Component<MyProps, MyState> {
     dataMarvel = new MarvelService()
+
+    itemRefs: HTMLLIElement[] = []
 
     constructor(props: MyProps) {
         super(props)
@@ -75,9 +77,23 @@ class CharList extends Component<MyProps, MyState> {
         }))
     }
 
+    setRef = (ref: HTMLLIElement) => {
+        if (ref) {
+            this.itemRefs.push(ref)
+        }
+    }
+
+    focusOnItem = (idx: number) => {
+        this.itemRefs.forEach((item) =>
+            item.classList.remove('char__item_selected')
+        )
+        this.itemRefs[idx].classList.add('char__item_selected')
+        this.itemRefs[idx].focus()
+    }
+
     renderItems = (arr: MyChar[]) => {
         const { onCharSelected } = this.props
-        return arr.map((item) => {
+        return arr.map((item, i) => {
             const fallBack = !!(
                 item.thumbnail.indexOf('image_not_available') !== -1
             )
@@ -85,10 +101,13 @@ class CharList extends Component<MyProps, MyState> {
                 <li
                     key={item.id}
                     className="char__item"
-                    onClick={() => onCharSelected(item.id)}
+                    ref={this.setRef}
+                    onClick={() => {
+                        onCharSelected(item.id)
+                        this.focusOnItem(i)
+                    }}
                     role="presentation"
                 >
-                    {/* <li className="char__item char__item_selected"></li> */}
                     <img
                         src={item.thumbnail}
                         alt={item.name}
@@ -113,7 +132,6 @@ class CharList extends Component<MyProps, MyState> {
             currentOffset,
             charEnded,
         } = this.state
-        const { onCharSelected } = this.props
         const items = this.renderItems(chars)
         const errorMessage = error ? <ErrorMessage /> : null
         const spinner = loading ? <Spinner loading={loading} /> : null

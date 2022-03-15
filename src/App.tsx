@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, FC } from 'react'
 import decoration from 'assets/img/vision.png'
 import AppHeader from './components/appHeader/AppHeader'
 import RandomChar from './components/randomChar/RandomChar'
