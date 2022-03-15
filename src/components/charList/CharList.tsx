@@ -13,6 +13,9 @@ type MyState = {
     chars: MyChar[]
     loading: boolean
     error: boolean
+    newItemsLoading: boolean
+    currentOffset: number
+    charEnded: boolean
 }
 class CharList extends Component<MyProps, MyState> {
     dataMarvel = new MarvelService()
@@ -23,11 +26,32 @@ class CharList extends Component<MyProps, MyState> {
             chars: [],
             loading: true,
             error: false,
+            newItemsLoading: false,
+            currentOffset: 200,
+            charEnded: false,
         }
     }
 
     componentDidMount() {
-        this.updateData()
+        const { currentOffset } = this.state
+
+        this.updateData(currentOffset)
+    }
+
+    updateData = async (offset: number) => {
+        try {
+            this.onCharListLoading()
+            const data = await this.dataMarvel.getAllcharacters(offset)
+            this.onCharsloaded(data)
+        } catch {
+            this.onError()
+        }
+    }
+
+    onCharListLoading = () => {
+        this.setState({
+            newItemsLoading: true,
+        })
     }
 
     onError = () => {
@@ -37,21 +61,18 @@ class CharList extends Component<MyProps, MyState> {
         })
     }
 
-    onCharsloaded = (chars: MyChar[]) => {
-        this.setState({
-            chars,
-            loading: false,
-        })
-    }
-
-    updateData = async () => {
-        try {
-            const data = await this.dataMarvel.getAllcharacters()
-            this.onCharsloaded(data)
-            const res = await this.dataMarvel.getAllData()
-        } catch {
-            this.onError()
+    onCharsloaded = (newChars: MyChar[]) => {
+        let ended = false
+        if (newChars.length < 9) {
+            ended = true
         }
+        this.setState(({ chars, currentOffset }) => ({
+            chars: [...chars, ...newChars],
+            loading: false,
+            newItemsLoading: false,
+            currentOffset: currentOffset + 9,
+            charEnded: ended,
+        }))
     }
 
     renderItems = (arr: MyChar[]) => {
@@ -84,12 +105,20 @@ class CharList extends Component<MyProps, MyState> {
     }
 
     render() {
-        const { chars, loading, error } = this.state
+        const {
+            chars,
+            loading,
+            error,
+            newItemsLoading,
+            currentOffset,
+            charEnded,
+        } = this.state
         const { onCharSelected } = this.props
         const items = this.renderItems(chars)
         const errorMessage = error ? <ErrorMessage /> : null
         const spinner = loading ? <Spinner loading={loading} /> : null
         const content = !(loading || error) ? items : null
+
         return (
             <div className="char__list">
                 <ul className="char__grid">
@@ -100,6 +129,9 @@ class CharList extends Component<MyProps, MyState> {
                 <button
                     type="button"
                     className="button button__main button__long"
+                    disabled={newItemsLoading}
+                    style={{ display: charEnded ? 'none' : 'block' }}
+                    onClick={() => this.updateData(currentOffset)}
                 >
                     <div className="inner">load more</div>
                 </button>

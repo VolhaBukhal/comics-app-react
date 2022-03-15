@@ -5,6 +5,8 @@ class MarvelService {
 
     readonly _apiKey: string = 'apikey=49fb4240a3b93c08e343b4f177e3690a'
 
+    readonly _charOffset: number = 200
+
     getResource = async (url: string): Promise<ICharactor> => {
         const result = await fetch(url)
 
@@ -17,8 +19,8 @@ class MarvelService {
         return data
     }
 
-    getAllcharacters = async () => {
-        const url = `${this._apiBase}/characters?limit=5&&offset=200&${this._apiKey}`
+    getAllcharacters = async (offset: number = this._charOffset) => {
+        const url = `${this._apiBase}/characters?limit=9&&offset=${offset}&${this._apiKey}`
         const res = await this.getResource(url)
         return res.data.results.map(this.transformCharacter)
     }
