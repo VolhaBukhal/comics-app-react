@@ -48,6 +48,7 @@ class CharList extends Component<MyProps, MyState> {
         try {
             const data = await this.dataMarvel.getAllcharacters()
             this.onCharsloaded(data)
+            const res = await this.dataMarvel.getAllData()
         } catch {
             this.onError()
         }
