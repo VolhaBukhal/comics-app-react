@@ -15,14 +15,11 @@ function View({ char }: MyViewProps) {
     const fallBack = !!(thumbnail.indexOf('image_not_available') !== -1)
 
     const renderComicsItems = (arr: IComicsItem[]) => {
-        if (arr) {
-            return arr.slice(0, 10).map((item, i) => (
-                <li key={i} className="char__comics-item">
-                    {item.name}
-                </li>
-            ))
-        }
-        return <li>There is no comics.</li>
+        return arr.slice(0, 10).map((item, i) => (
+            <li key={i} className="char__comics-item">
+                {item.name}
+            </li>
+        ))
     }
     return (
         <>
@@ -51,7 +48,11 @@ function View({ char }: MyViewProps) {
             <div className="char__descr">{description}</div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
-                {comics ? renderComicsItems(comics.items) : null}
+                {comics && comics.items.length > 0 ? (
+                    renderComicsItems(comics.items)
+                ) : (
+                    <h4>There is no comics of this character.</h4>
+                )}
             </ul>
         </>
     )
