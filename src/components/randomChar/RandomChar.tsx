@@ -149,7 +149,7 @@ class RandomChar extends Component<unknown, MyState> {
                         className="button button__main"
                         onClick={this.updateChar}
                     >
-                        <div className="inner" />
+                        <div className="inner">Try it</div>
                     </button>
                     <img
                         src={mjolnir}
