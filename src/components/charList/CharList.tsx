@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import './charList.scss'
 import { MyChar } from 'type/types'
 import MarvelService from 'services/MarvelService'
@@ -9,90 +9,82 @@ type MyProps = {
     onCharSelected: (id: number) => void
 }
 
-type MyState = {
-    chars: MyChar[]
-    loading: boolean
-    error: boolean
-    newItemsLoading: boolean
-    currentOffset: number
-    charEnded: boolean
-}
-class CharList extends Component<MyProps, MyState> {
-    dataMarvel = new MarvelService()
+function CharList({ onCharSelected }: MyProps) {
+    const dataMarvel = useMemo(() => new MarvelService(), [])
 
-    itemRefs: HTMLLIElement[] = []
+    const [chars, setChars] = useState<MyChar[]>([])
+    const [currentOffset, setCurrentOffset] = useState<number>(200)
+    const [charEnded, setCharEnded] = useState<boolean>(false)
+    const [error, setError] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
+    const [newItemsLoading, setNewItemsLoading] = useState<boolean>(false)
 
-    constructor(props: MyProps) {
-        super(props)
-        this.state = {
-            chars: [],
-            loading: true,
-            error: false,
-            newItemsLoading: false,
-            currentOffset: 200,
-            charEnded: false,
-        }
-    }
+    const onCharListLoading = useCallback(() => {
+        setNewItemsLoading(true)
+    }, [])
 
-    componentDidMount() {
-        const { currentOffset } = this.state
+    const onError = useCallback(() => {
+        setLoading(false)
+        setError(true)
+    }, [])
 
-        this.updateData(currentOffset)
-    }
+    const onCharsloaded = useCallback(
+        (newChars: MyChar[]) => {
+            let ended = false
+            if (newChars.length < 9) {
+                ended = true
+            }
 
-    updateData = async (offset: number) => {
-        try {
-            this.onCharListLoading()
-            const data = await this.dataMarvel.getAllcharacters(offset)
-            this.onCharsloaded(data)
-        } catch {
-            this.onError()
-        }
-    }
+            setChars((charsData) => [...charsData, ...newChars])
+            setLoading(false)
+            setNewItemsLoading(newItemsLoading)
+            setCurrentOffset(currentOffset + 9)
+            setCharEnded(ended)
+        },
+        [
+            setChars,
+            setLoading,
+            setNewItemsLoading,
+            setCurrentOffset,
+            setCharEnded,
+            newItemsLoading,
+            currentOffset,
+        ]
+    )
 
-    onCharListLoading = () => {
-        this.setState({
-            newItemsLoading: true,
-        })
-    }
+    const updateData = useCallback(
+        async (offset = 200) => {
+            try {
+                onCharListLoading()
+                const data = await dataMarvel.getAllcharacters(offset)
+                onCharsloaded(data)
+            } catch {
+                onError()
+            }
+        },
+        [onCharListLoading, onCharsloaded, onError, dataMarvel]
+    )
 
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true,
-        })
-    }
+    useEffect(() => {
+        console.log('useEffect')
+        updateData(currentOffset)
+    }, [])
 
-    onCharsloaded = (newChars: MyChar[]) => {
-        let ended = false
-        if (newChars.length < 9) {
-            ended = true
-        }
-        this.setState(({ chars, currentOffset }) => ({
-            chars: [...chars, ...newChars],
-            loading: false,
-            newItemsLoading: false,
-            currentOffset: currentOffset + 9,
-            charEnded: ended,
-        }))
-    }
+    const itemRefs: HTMLLIElement[] = []
 
-    setRef = (ref: HTMLLIElement) => {
+    const setRef = (ref: HTMLLIElement) => {
         if (ref) {
-            this.itemRefs.push(ref)
+            itemRefs.push(ref)
         }
     }
 
-    focusOnItem = (idx: number) => {
-        this.itemRefs.forEach((item) =>
-            item.classList.remove('char__item_selected')
-        )
-        this.itemRefs[idx].classList.add('char__item_selected')
-        this.itemRefs[idx].focus()
+    const focusOnItem = (idx: number) => {
+        itemRefs.forEach((item) => item.classList.remove('char__item_selected'))
+        itemRefs[idx].classList.add('char__item_selected')
+        itemRefs[idx].focus()
     }
 
-    renderItems = (arr: MyChar[]) => {
-        const { onCharSelected } = this.props
+    const renderItems = (arr: MyChar[]) => {
         return arr.map((item, i) => {
             const fallBack = !!(
                 item.thumbnail.indexOf('image_not_available') !== -1
@@ -101,10 +93,10 @@ class CharList extends Component<MyProps, MyState> {
                 <li
                     key={item.id}
                     className="char__item"
-                    ref={this.setRef}
+                    ref={setRef}
                     onClick={() => {
                         onCharSelected(item.id)
-                        this.focusOnItem(i)
+                        focusOnItem(i)
                     }}
                     role="presentation"
                 >
@@ -123,39 +115,29 @@ class CharList extends Component<MyProps, MyState> {
         })
     }
 
-    render() {
-        const {
-            chars,
-            loading,
-            error,
-            newItemsLoading,
-            currentOffset,
-            charEnded,
-        } = this.state
-        const items = this.renderItems(chars)
-        const errorMessage = error ? <ErrorMessage /> : null
-        const spinner = loading ? <Spinner loading={loading} /> : null
-        const content = !(loading || error) ? items : null
+    const items = renderItems(chars)
+    const errorMessage = error ? <ErrorMessage /> : null
+    const spinner = loading ? <Spinner loading={loading} /> : null
+    const content = !(loading || error) ? items : null
 
-        return (
-            <div className="char__list">
-                <ul className="char__grid">
-                    {errorMessage}
-                    {spinner}
-                    {content}
-                </ul>
-                <button
-                    type="button"
-                    className="button button__main button__long"
-                    disabled={newItemsLoading}
-                    style={{ display: charEnded ? 'none' : 'block' }}
-                    onClick={() => this.updateData(currentOffset)}
-                >
-                    <div className="inner">load more</div>
-                </button>
-            </div>
-        )
-    }
+    return (
+        <div className="char__list">
+            <ul className="char__grid">
+                {errorMessage}
+                {spinner}
+                {content}
+            </ul>
+            <button
+                type="button"
+                className="button button__main button__long"
+                disabled={newItemsLoading}
+                style={{ display: charEnded ? 'none' : 'block' }}
+                onClick={() => updateData(currentOffset)}
+            >
+                <div className="inner">load more</div>
+            </button>
+        </div>
+    )
 }
 
 export default CharList
