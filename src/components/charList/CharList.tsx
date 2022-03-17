@@ -66,7 +66,6 @@ function CharList({ onCharSelected }: MyProps) {
     )
 
     useEffect(() => {
-        console.log('useEffect')
         updateData(currentOffset)
     }, [])
 
