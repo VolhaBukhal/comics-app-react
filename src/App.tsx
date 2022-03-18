@@ -19,12 +19,12 @@ function App() {
                 <ErrorBoundary>
                     <RandomChar />
                 </ErrorBoundary>
-                {/* <div className="char__content">
+                <div className="char__content">
                     <CharList onCharSelected={onCharSelected} />
-                    <ErrorBoundary>
+                    {/* <ErrorBoundary>
                         <CharInfo charId={selectedChar} />
-                    </ErrorBoundary>
-                </div> */}
+                    </ErrorBoundary> */}
+                </div>
                 <img className="bg-decoration" src={decoration} alt="vision" />
             </main>
         </div>

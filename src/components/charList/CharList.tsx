@@ -10,23 +10,12 @@ type MyProps = {
 }
 
 function CharList({ onCharSelected }: MyProps) {
-    const dataMarvel = useMarvelService()
+    const { loading, error, getAllcharacters } = useMarvelService()
 
     const [chars, setChars] = useState<MyChar[]>([])
     const [currentOffset, setCurrentOffset] = useState<number>(200)
     const [charEnded, setCharEnded] = useState<boolean>(false)
-    const [error, setError] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(true)
     const [newItemsLoading, setNewItemsLoading] = useState<boolean>(false)
-
-    const onCharListLoading = useCallback(() => {
-        setNewItemsLoading(true)
-    }, [])
-
-    const onError = useCallback(() => {
-        setLoading(false)
-        setError(true)
-    }, [])
 
     const onCharsloaded = useCallback(
         (newChars: MyChar[]) => {
@@ -36,37 +25,38 @@ function CharList({ onCharSelected }: MyProps) {
             }
 
             setChars((charsData) => [...charsData, ...newChars])
-            setLoading(false)
             setNewItemsLoading(newItemsLoading)
             setCurrentOffset(currentOffset + 9)
             setCharEnded(ended)
         },
         [
-            setChars,
-            setLoading,
-            setNewItemsLoading,
-            setCurrentOffset,
-            setCharEnded,
-            newItemsLoading,
-            currentOffset,
+            // setChars,
+            // setCurrentOffset,
+            // setCharEnded,
+            // newItemsLoading,
+            // currentOffset,
         ]
     )
 
     const updateData = useCallback(
-        async (offset = 200) => {
-            try {
-                onCharListLoading()
-                const data = await dataMarvel.getAllcharacters(offset)
-                onCharsloaded(data)
-            } catch {
-                onError()
+        async (initial: boolean, offset = 200) => {
+            if (initial) {
+                setNewItemsLoading(false)
+            } else {
+                setNewItemsLoading(true)
             }
+
+            getAllcharacters(offset).then((result) => {
+                if (result && result !== null) {
+                    onCharsloaded(result)
+                }
+            })
         },
-        [onCharListLoading, onCharsloaded, onError, dataMarvel]
+        [onCharsloaded, getAllcharacters]
     )
 
     useEffect(() => {
-        updateData(currentOffset)
+        updateData(true, currentOffset)
     }, [])
 
     const itemRefs: HTMLLIElement[] = []
@@ -116,22 +106,22 @@ function CharList({ onCharSelected }: MyProps) {
 
     const items = renderItems(chars)
     const errorMessage = error ? <ErrorMessage /> : null
-    const spinner = loading ? <Spinner loading={loading} /> : null
-    const content = !(loading || error) ? items : null
+    const spinner =
+        loading && !newItemsLoading ? <Spinner loading={loading} /> : null
 
     return (
         <div className="char__list">
             <ul className="char__grid">
                 {errorMessage}
                 {spinner}
-                {content}
+                {items}
             </ul>
             <button
                 type="button"
                 className="button button__main button__long"
                 disabled={newItemsLoading}
                 style={{ display: charEnded ? 'none' : 'block' }}
-                onClick={() => updateData(currentOffset)}
+                onClick={() => updateData(false, currentOffset)}
             >
                 <div className="inner">load more</div>
             </button>
