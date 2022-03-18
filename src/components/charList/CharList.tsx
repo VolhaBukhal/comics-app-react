@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import './charList.scss'
 import { MyChar } from 'type/types'
-import MarvelService from 'services/MarvelService'
+import useMarvelService from 'services/MarvelService'
 import ErrorMessage from '../errorMessage/ErrorMessage'
 import Spinner from '../spinner/Spinner'
 
@@ -10,7 +10,7 @@ type MyProps = {
 }
 
 function CharList({ onCharSelected }: MyProps) {
-    const dataMarvel = useMemo(() => new MarvelService(), [])
+    const dataMarvel = useMarvelService()
 
     const [chars, setChars] = useState<MyChar[]>([])
     const [currentOffset, setCurrentOffset] = useState<number>(200)
