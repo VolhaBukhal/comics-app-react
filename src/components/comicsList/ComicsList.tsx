@@ -4,7 +4,8 @@ import xMen from 'assets/img/x-men.png'
 import { MyChar, IDataComics, IMainComicsInfo } from 'type/types'
 import useMarvelService from 'services'
 import { render } from '@testing-library/react'
-import { updateTaggedTemplate } from 'typescript'
+import ErrorMessage from 'components/errorMessage'
+import Spinner from 'components/spinner'
 
 function ComicsList() {
     const { loading, error, getAllComics } = useMarvelService()
@@ -105,8 +106,14 @@ function ComicsList() {
         })
     }
 
+    const errorMessage = error ? <ErrorMessage /> : null
+    const spinner =
+        loading && !newItemsLoading ? <Spinner loading={loading} /> : null
+
     return (
         <div className="comics__list">
+            {errorMessage}
+            {spinner}
             <ul className="comics__grid">{renderItems(comics)}</ul>
             <button
                 type="button"
