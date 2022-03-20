@@ -1,19 +1,9 @@
-import React, { FC, useState } from 'react'
-import decoration from 'assets/img/vision.png'
+import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { MainPage, ComicsPage } from 'components/pages'
 import AppHeader from './components/appHeader/AppHeader'
-import RandomChar from './components/randomChar/RandomChar'
-import CharList from './components/charList/CharList'
-import CharInfo from './components/charInfo'
-import ErrorBoundary from './components/errorBoundary'
-import ComicsList from './components/comicsList'
 
 function App() {
-    const [selectedChar, setSelectedChar] = useState<number>(0)
-
-    const onCharSelected = (id: number) => {
-        setSelectedChar(id)
-    }
     return (
         <Router>
             <div className="app">
@@ -21,23 +11,10 @@ function App() {
                 <main>
                     <Switch>
                         <Route path="/" exact>
-                            <ErrorBoundary>
-                                <RandomChar />
-                            </ErrorBoundary>
-                            <div className="char__content">
-                                <CharList onCharSelected={onCharSelected} />
-                                <ErrorBoundary>
-                                    <CharInfo charId={selectedChar} />
-                                </ErrorBoundary>
-                            </div>
-                            <img
-                                className="bg-decoration"
-                                src={decoration}
-                                alt="vision"
-                            />
+                            <MainPage />
                         </Route>
                         <Route path="/comics" exact>
-                            <ComicsList />
+                            <ComicsPage />
                         </Route>
                     </Switch>
                 </main>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link, NavLink } from 'react-router-dom'
 import './AppHeader.scss'
 
 function AppHeader() {
@@ -6,17 +7,31 @@ function AppHeader() {
         <header className="app__header">
             <h1 className="app__title">
                 <a href="https://github.com">
-                    <span>Marvel</span> information portal
+                    <Link to="/">
+                        <span>Marvel</span> information portal
+                    </Link>
                 </a>
             </h1>
             <nav className="app__menu">
                 <ul>
                     <li>
-                        <a href="https://github.com">Characters</a>
+                        <NavLink
+                            exact
+                            activeStyle={{ color: '#9f0013' }}
+                            to="/"
+                        >
+                            Characters
+                        </NavLink>
                     </li>
                     /
                     <li>
-                        <a href="https://github.com">Comics</a>
+                        <NavLink
+                            exact
+                            activeStyle={{ color: '#9f0013' }}
+                            to="/comics"
+                        >
+                            Comics
+                        </NavLink>
                     </li>
                 </ul>
             </nav>
