@@ -46,9 +46,8 @@
         "no-underscore-dangle": ["error", { "allowAfterThis": true }],
         "class-methods-use-this": ["error", { "enforceForClassFields": false}],
         "jsx-a11y/no-noninteractive-element-interactions": [ "error", { "handlers": [ "onClick", "onKeyPress"] } ],
-        "react/no-array-index-key": "off"
-        
-
+        "react/no-array-index-key": "off",
+        "consistent-return": ["error", { "treatUndefinedAsUnspecified": true }]
     }
 }
 

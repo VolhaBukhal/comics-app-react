@@ -90,136 +90,187 @@ export interface MyChar {
     comics?: IComics
 }
 
+export interface IDataComics {
+    code: number
+    status: string
+    data: {
+        offset: number
+        limit: number
+        total: number
+        results: IMainComicsInfo[]
+    }
+}
+
+interface IPrices {
+    type: string
+    price: number
+}
+
+export interface IMainComicsInfo {
+    id: number
+    title: string
+    issueNumber: number
+    name: string
+    description: string
+    variantDescription: string
+    modified: string
+    resourceURI: string
+    comics: IComics
+    series: ISeries
+    stories: IStories
+    events: IEvents
+    urls: IUrlsItem[]
+    prices: IPrices[]
+    thumbnail: {
+        path: string
+        extension: string
+    }
+}
+
 // {
-//   "code": 200,
-//   "status": "Ok",
-//   "copyright": "© 2022 MARVEL",
-//   "attributionText": "Data provided by Marvel. © 2022 MARVEL",
-//   "attributionHTML": "<a href=\"http://marvel.com\">Data provided by Marvel. © 2022 MARVEL</a>",
-//   "etag": "cb417587000b4a85a771e23b07a348cd03a9a0f8",
-//   "data": {
-//     "offset": 0,
-//     "limit": 20,
-//     "total": 1,
-//     "count": 1,
-//     "results": [
-//       {
-//         "id": 1011176,
-//         "name": "Ajak",
-//         "description": "",
-//         "modified": "1969-12-31T19:00:00-0500",
-//         "thumbnail": {
-//           "path": "http://i.annihil.us/u/prod/marvel/i/mg/2/80/4c002f35c5215",
-//           "extension": "jpg"
-//         },
-//         "resourceURI": "http://gateway.marvel.com/v1/public/characters/1011176",
-//         "comics": {
-//           "available": 4,
-//           "collectionURI": "http://gateway.marvel.com/v1/public/characters/1011176/comics",
-//           "items": [
+//       "results": [
+//         {
+//           "id": 82967,
+//           "digitalId": 0,
+//           "title": "Marvel Previews (2017)",
+//           "issueNumber": 0,
+//           "variantDescription": "",
+//           "description": null,
+//           "modified": "2019-11-07T08:46:15-0500",
+//           "isbn": "",
+//           "upc": "75960608839302811",
+//           "diamondCode": "",
+//           "ean": "",
+//           "issn": "",
+//           "format": "",
+//           "pageCount": 112,
+//           "textObjects": [],
+//           "resourceURI": "http://gateway.marvel.com/v1/public/comics/82967",
+//           "urls": [
 //             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/21175",
-//               "name": "Incredible Hercules (2008) #117"
-//             },
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/21324",
-//               "name": "Incredible Hercules (2008) #118"
-//             },
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/21505",
-//               "name": "Incredible Hercules (2008) #119"
-//             },
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/21707",
-//               "name": "Incredible Hercules (2008) #120"
+//               "type": "detail",
+//               "url": "http://marvel.com/comics/issue/82967/marvel_previews_2017?utm_campaign=apiRef&utm_source=07e3e205bebd46de31d15ee9a76d85c2"
 //             }
 //           ],
-//           "returned": 4
-//         },
-//         "series": {
-//           "available": 1,
-//           "collectionURI": "http://gateway.marvel.com/v1/public/characters/1011176/series",
-//           "items": [
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/series/3762",
-//               "name": "Incredible Hercules (2008 - 2010)"
-//             }
-//           ],
-//           "returned": 1
-//         },
-//         "stories": {
-//           "available": 8,
-//           "collectionURI": "http://gateway.marvel.com/v1/public/characters/1011176/stories",
-//           "items": [
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/stories/46776",
-//               "name": "Incredible Hercules (2008) #117",
-//               "type": "cover"
-//             },
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/stories/46777",
-//               "name": "Interior #46777",
-//               "type": "interiorStory"
-//             },
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/stories/47097",
-//               "name": "Incredible Hercules (2008) #118",
-//               "type": "cover"
-//             },
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/stories/47098",
-//               "name": "Interior #47098",
-//               "type": "interiorStory"
-//             },
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/stories/47415",
-//               "name": "Incredible Hercules (2008) #119",
-//               "type": "cover"
-//             },
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/stories/47416",
-//               "name": "3 of 4 - Secret Invasion",
-//               "type": "interiorStory"
-//             },
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/stories/47721",
-//               "name": "Incredible Hercules (2008) #120",
-//               "type": "cover"
-//             },
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/stories/47722",
-//               "name": "4 of 4 - Secret Invasion",
-//               "type": "interiorStory"
-//             }
-//           ],
-//           "returned": 8
-//         },
-//         "events": {
-//           "available": 1,
-//           "collectionURI": "http://gateway.marvel.com/v1/public/characters/1011176/events",
-//           "items": [
-//             {
-//               "resourceURI": "http://gateway.marvel.com/v1/public/events/269",
-//               "name": "Secret Invasion"
-//             }
-//           ],
-//           "returned": 1
-//         },
-//         "urls": [
-//           {
-//             "type": "detail",
-//             "url": "http://marvel.com/characters/111/ajak?utm_campaign=apiRef&utm_source=49fb4240a3b93c08e343b4f177e3690a"
+//           "series": {
+//             "resourceURI": "http://gateway.marvel.com/v1/public/series/23665",
+//             "name": "Marvel Previews (2017 - Present)"
 //           },
-//           {
-//             "type": "wiki",
-//             "url": "http://marvel.com/universe/Ajak?utm_campaign=apiRef&utm_source=49fb4240a3b93c08e343b4f177e3690a"
+//           "variants": [
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/82965",
+//               "name": "Marvel Previews (2017)"
+//             },
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/82970",
+//               "name": "Marvel Previews (2017)"
+//             },
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/82969",
+//               "name": "Marvel Previews (2017)"
+//             },
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/74697",
+//               "name": "Marvel Previews (2017)"
+//             },
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/72736",
+//               "name": "Marvel Previews (2017)"
+//             },
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/75668",
+//               "name": "Marvel Previews (2017)"
+//             },
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/65364",
+//               "name": "Marvel Previews (2017)"
+//             },
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/65158",
+//               "name": "Marvel Previews (2017)"
+//             },
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/65028",
+//               "name": "Marvel Previews (2017)"
+//             },
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/75662",
+//               "name": "Marvel Previews (2017)"
+//             },
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/74320",
+//               "name": "Marvel Previews (2017)"
+//             },
+//             {
+//               "resourceURI": "http://gateway.marvel.com/v1/public/comics/73776",
+//               "name": "Marvel Previews (2017)"
+//             }
+//           ],
+//           "collections": [],
+//           "collectedIssues": [],
+//           "dates": [
+//             {
+//               "type": "onsaleDate",
+//               "date": "2099-10-30T00:00:00-0500"
+//             },
+//             {
+//               "type": "focDate",
+//               "date": "2019-10-07T00:00:00-0400"
+//             }
+//           ],
+//           "prices": [
+//             {
+//               "type": "printPrice",
+//               "price": 0
+//             }
+//           ],
+//           "thumbnail": {
+//             "path": "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available",
+//             "extension": "jpg"
 //           },
-//           {
-//             "type": "comiclink",
-//             "url": "http://marvel.com/comics/characters/1011176/ajak?utm_campaign=apiRef&utm_source=49fb4240a3b93c08e343b4f177e3690a"
+//           "images": [],
+//           "creators": {
+//             "available": 1,
+//             "collectionURI": "http://gateway.marvel.com/v1/public/comics/82967/creators",
+//             "items": [
+//               {
+//                 "resourceURI": "http://gateway.marvel.com/v1/public/creators/10021",
+//                 "name": "Jim Nausedas",
+//                 "role": "editor"
+//               }
+//             ],
+//             "returned": 1
+//           },
+//           "characters": {
+//             "available": 0,
+//             "collectionURI": "http://gateway.marvel.com/v1/public/comics/82967/characters",
+//             "items": [],
+//             "returned": 0
+//           },
+//           "stories": {
+//             "available": 2,
+//             "collectionURI": "http://gateway.marvel.com/v1/public/comics/82967/stories",
+//             "items": [
+//               {
+//                 "resourceURI": "http://gateway.marvel.com/v1/public/stories/183698",
+//                 "name": "cover from Marvel Previews (2017)",
+//                 "type": "cover"
+//               },
+//               {
+//                 "resourceURI": "http://gateway.marvel.com/v1/public/stories/183699",
+//                 "name": "story from Marvel Previews (2017)",
+//                 "type": "interiorStory"
+//               }
+//             ],
+//             "returned": 2
+//           },
+//           "events": {
+//             "available": 0,
+//             "collectionURI": "http://gateway.marvel.com/v1/public/comics/82967/events",
+//             "items": [],
+//             "returned": 0
 //           }
-//         ]
-//       }
-//     ]
+//         },
+//                  ]
+//     }
 //   }
-// }

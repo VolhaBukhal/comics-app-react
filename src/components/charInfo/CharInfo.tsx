@@ -1,8 +1,7 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import './charInfo.scss'
-import thor from 'assets/img/thor.jpeg'
-import { IMainCharactorInfo, MyChar, IComicsItem } from 'type/types'
-import MarvelService from 'services/MarvelService'
+import { MyChar, IComicsItem } from 'type/types'
+import useMarvelService from 'services/MarvelService'
 import ErrorMessage from '../errorMessage/ErrorMessage'
 import Spinner from '../spinner/Spinner'
 import Sceleon from '../skeleton/Skeleton'
@@ -62,97 +61,59 @@ type MyProps = {
     charId: number
 }
 
-type MyState = {
-    char: MyChar
-    loading: boolean
-    error: boolean
-}
+function CharInfo({ charId }: MyProps) {
+    const { error, loading, getOneCharacter, clearError } = useMarvelService()
+    const [char, setChar] = useState<MyChar>({
+        id: charId,
+        name: '',
+        description: '',
+        thumbnail: '',
+        homepage: '',
+        wiki: '',
+        comics: {
+            available: 0,
+            collectionURI: '',
+            items: [],
+            returned: 0,
+        },
+    })
 
-class CharInfo extends Component<MyProps, MyState> {
-    marvelData = new MarvelService()
-
-    constructor(props: MyProps) {
-        super(props)
-        const { charId } = this.props
-        this.state = {
-            char: {
-                id: charId,
-                name: '',
-                description: '',
-                thumbnail: '',
-                homepage: '',
-                wiki: '',
-                comics: {
-                    available: 0,
-                    collectionURI: '',
-                    items: [],
-                    returned: 0,
-                },
-            },
-            loading: false,
-            error: false,
-        }
+    const onCharLoaded = (newchar: MyChar) => {
+        setChar(newchar)
     }
 
-    componentDidMount() {
-        this.updateChar()
-    }
-
-    componentDidUpdate(prevProps: MyProps) {
-        const { charId } = this.props
-        if (charId !== prevProps.charId) {
-            this.updateChar()
-        }
-    }
-
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true,
-        })
-    }
-
-    onCharLoaded = (char: MyChar) => {
-        this.setState({ char, loading: false })
-    }
-
-    onCharLoading = () => {
-        this.setState({ loading: true })
-    }
-
-    updateChar = () => {
-        const { charId } = this.props
+    const updateChar = () => {
         if (!charId) {
             return
         }
-        this.onCharLoading()
-        this.marvelData
-            .getOneCharacter(charId)
-            .then((result) => {
-                this.onCharLoaded(result)
-            })
-            .catch(this.onError)
+        clearError()
+        getOneCharacter(charId).then((result) => {
+            if (result && result !== null) {
+                onCharLoaded(result[0])
+            }
+        })
     }
 
-    render() {
-        const { char, loading, error } = this.state
-        const charExist = !!char.id
-        const skeleton = charExist || loading || error ? null : <Sceleon />
-        const errorMessage = error ? <ErrorMessage /> : null
-        const spinner = loading ? <Spinner loading={loading} /> : null
-        const content = !(loading || error || !charExist) ? (
-            <View char={char} />
-        ) : null
+    useEffect(() => {
+        updateChar()
+    }, [charId])
 
-        return (
-            <div className="char__info">
-                {skeleton}
-                {errorMessage}
-                {spinner}
-                {content}
-            </div>
-        )
-    }
+    const charExist = !!char.id
+    const skeleton = charExist || loading || error ? null : <Sceleon />
+    const errorMessage = error ? <ErrorMessage /> : null
+    const spinner = loading ? <Spinner loading={loading} /> : null
+    const content = !(loading || error || !charExist) ? (
+        <View char={char} />
+    ) : null
+
+    return (
+        <div className="char__info">
+            {skeleton}
+            {errorMessage}
+            {spinner}
+            {content}
+        </div>
+    )
 }
 
 export default CharInfo

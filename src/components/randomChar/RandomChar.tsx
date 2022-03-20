@@ -1,7 +1,7 @@
-import React, { FC, Component } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import './randomChar.scss'
 import mjolnir from 'assets/img/mjolnir.png'
-import MarvelService from 'services/MarvelService'
+import useMarvelService from 'services/MarvelService'
 import { MyChar } from 'type/types'
 import Spinner from '../spinner/Spinner'
 
@@ -54,56 +54,42 @@ type MyFProps = {
     cutDescription: (text: string) => string
 }
 
-class RandomChar extends Component<unknown, MyState> {
-    marvelData = new MarvelService()
+function RandomChar() {
+    const [char, setCahr] = useState<MyChar>({
+        id: 0,
+        name: '',
+        description: '',
+        thumbnail: '',
+        homepage: '',
+        wiki: '',
+    })
 
-    constructor(props = {}) {
-        super(props)
-        this.state = {
-            char: {
-                id: 0,
-                name: '',
-                description: '',
-                thumbnail: '',
-                homepage: '',
-                wiki: '',
-            },
-            loading: true,
-            error: false,
-        }
+    const { error, loading, getOneCharacter, clearError } = useMarvelService()
+
+    // const onError = () => {
+    //     setError(true)
+    //     setLoading(false)
+    // }
+
+    const onCharLoaded = (newChar: MyChar) => {
+        setCahr(newChar)
     }
 
-    componentDidMount() {
-        this.updateChar()
-    }
-
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true,
+    function updateChar() {
+        clearError()
+        const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
+        getOneCharacter(id).then((result) => {
+            if (result && result !== null) {
+                onCharLoaded(result[0])
+            }
         })
     }
 
-    onCharLoaded = (char: MyChar) => {
-        this.setState({ char, loading: false })
-    }
+    useEffect(() => {
+        updateChar()
+    }, [])
 
-    onCharLoading = () => {
-        this.setState({ loading: true })
-    }
-
-    updateChar = () => {
-        const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
-        this.onCharLoading()
-        this.marvelData
-            .getOneCharacter(id)
-            .then((result) => {
-                this.onCharLoaded(result)
-            })
-            .catch(this.onError)
-    }
-
-    cutDescription = (text: string) => {
+    const cutDescription = (text: string) => {
         if (text) {
             if (text.length > 200) {
                 const x = text.slice(0, 200)
@@ -114,17 +100,15 @@ class RandomChar extends Component<unknown, MyState> {
         return 'There is no descriptiion of this character'
     }
 
-    render() {
-        const { char, loading, error } = this.state
-        const errorMessage = error ? <ErrorMessage /> : null
-        const spinner = loading ? <Spinner loading={loading} /> : null
-        const content = !(loading || error) ? (
-            <View char={char} cutDescription={this.cutDescription} />
-        ) : null
+    const errorMessage = error ? <ErrorMessage /> : null
+    const spinner = loading ? <Spinner loading={loading} /> : null
+    const content = !(loading || error) ? (
+        <View char={char} cutDescription={cutDescription} />
+    ) : null
 
-        return (
-            <div className="randomchar">
-                {/* {loading ? (
+    return (
+        <div className="randomchar">
+            {/* {loading ? (
                     <ClipLoader
                         color="darkred"
                         loading={loading}
@@ -134,32 +118,31 @@ class RandomChar extends Component<unknown, MyState> {
                 ) : (
                     <View char={char} cutDescription={this.cutDescription} />
                 )} */}
-                {errorMessage}
-                {spinner}
-                {content}
-                <div className="randomchar__static">
-                    <p className="randomchar__title">
-                        Random character for today!
-                        <br />
-                        Do you want to get to know him better?
-                    </p>
-                    <p className="randomchar__title">Or choose another one</p>
-                    <button
-                        type="button"
-                        className="button button__main"
-                        onClick={this.updateChar}
-                    >
-                        <div className="inner">Try it</div>
-                    </button>
-                    <img
-                        src={mjolnir}
-                        alt="mjolnir"
-                        className="randomchar__decoration"
-                    />
-                </div>
+            {errorMessage}
+            {spinner}
+            {content}
+            <div className="randomchar__static">
+                <p className="randomchar__title">
+                    Random character for today!
+                    <br />
+                    Do you want to get to know him better?
+                </p>
+                <p className="randomchar__title">Or choose another one</p>
+                <button
+                    type="button"
+                    className="button button__main"
+                    onClick={updateChar}
+                >
+                    <div className="inner">Try it</div>
+                </button>
+                <img
+                    src={mjolnir}
+                    alt="mjolnir"
+                    className="randomchar__decoration"
+                />
             </div>
-        )
-    }
+        </div>
+    )
 }
 
 export default RandomChar

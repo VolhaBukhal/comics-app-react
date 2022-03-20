@@ -1,54 +1,93 @@
-import { ICharactor, MyChar, IMainCharactorInfo } from 'type/types'
+import {
+    ICharactor,
+    MyChar,
+    IMainCharactorInfo,
+    IMainComicsInfo,
+    IDataComics,
+} from 'type/types'
+import { getLeadingCommentRanges } from 'typescript'
 
-class MarvelService {
-    readonly _apiBase: string = 'https://gateway.marvel.com:443/v1/public/'
+import { useHttp } from '../hooks/http.hook'
 
-    readonly _apiKey: string = 'apikey=49fb4240a3b93c08e343b4f177e3690a'
-
-    readonly _charOffset: number = 200
-
-    getResource = async (url: string): Promise<ICharactor> => {
-        const result = await fetch(url)
-
-        if (!result.ok) {
-            throw new Error(`Couldn't fetch ${url}, status ${result.status}`)
-        }
-
-        const data: Promise<ICharactor> = result.json()
-
-        return data
-    }
-
-    getAllcharacters = async (offset: number = this._charOffset) => {
-        const url = `${this._apiBase}/characters?limit=9&&offset=${offset}&${this._apiKey}`
-        const res = await this.getResource(url)
-        return res.data.results.map(this.transformCharacter)
-    }
-
-    getAllData = async () => {
-        const url = `${this._apiBase}/characters?limit=5&&offset=202&${this._apiKey}`
-        const res = await this.getResource(url)
-        console.log(res)
-        // return res.data.results.map(this.transformCharacter)
-    }
-
-    getOneCharacter = async (id: number) => {
-        const url = `${this._apiBase}/characters/${id}?${this._apiKey}`
-        const res = await this.getResource(url)
-        return this.transformCharacter(res.data.results[0])
-    }
-
-    transformCharacter = (result: IMainCharactorInfo): MyChar => {
-        const char = result
-        return {
-            id: char.id,
-            name: char.name,
-            description: char.description,
-            thumbnail: `${char.thumbnail.path}.${char.thumbnail.extension}`,
-            homepage: char.urls[0].url,
-            wiki: char.urls[1].url,
-            comics: char.comics,
-        }
+export function transformCharacter(
+    result: IMainCharactorInfo | IMainComicsInfo
+): MyChar {
+    const char = result
+    return {
+        id: char.id,
+        name: char.name,
+        description: char.description,
+        thumbnail: `${char.thumbnail.path}.${char.thumbnail.extension}`,
+        homepage: char.urls[0].url,
+        wiki: char.urls[1].url,
+        comics: char.comics,
     }
 }
-export default MarvelService
+
+const useMarvelService = () => {
+    const { loading, request, error, clearError } = useHttp()
+
+    const apiBase = 'https://gateway.marvel.com:443/v1/public/'
+
+    const apiKey = 'apikey=49fb4240a3b93c08e343b4f177e3690a'
+
+    const charOffset = 200
+
+    const comicsOffset = 100
+
+    const getAllcharacters = async (
+        offset: number = charOffset
+    ): Promise<ICharactor | null> => {
+        const url = `${apiBase}/characters?limit=9&&offset=${offset}&${apiKey}`
+
+        const res = await request(url)
+
+        if (res) {
+            return res as ICharactor
+        }
+        return null
+    }
+
+    const getAllComics = async (
+        offset: number = comicsOffset
+    ): Promise<IDataComics | null> => {
+        const url = `${apiBase}/comics?limit=8&&offset=${offset}&${apiKey}`
+
+        const res = await request(url)
+
+        if (res) {
+            return res as IDataComics
+        }
+        return null
+    }
+
+    const getAllData = async () => {
+        const url = `${apiBase}/characters?limit=5&&offset=202&${apiKey}`
+        const res = await request(url)
+        console.log(res)
+
+        if (res) {
+            return res.data.results.map(transformCharacter)
+        }
+        return null
+    }
+
+    const getOneCharacter = async (id: number) => {
+        const url = `${apiBase}/characters/${id}?${apiKey}`
+        const res = await request(url)
+        if (res) {
+            return res.data.results.map(transformCharacter)
+        }
+        return null
+    }
+
+    return {
+        loading,
+        error,
+        getAllcharacters,
+        getOneCharacter,
+        clearError,
+        getAllComics,
+    }
+}
+export default useMarvelService
