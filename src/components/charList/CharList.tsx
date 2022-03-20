@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import './charList.scss'
 import { MyChar } from 'type/types'
-import useMarvelService from 'services/MarvelService'
+import useMarvelService, { transformCharacter } from 'services/MarvelService'
 import ErrorMessage from '../errorMessage/ErrorMessage'
 import Spinner from '../spinner/Spinner'
 
@@ -17,26 +17,17 @@ function CharList({ onCharSelected }: MyProps) {
     const [charEnded, setCharEnded] = useState<boolean>(false)
     const [newItemsLoading, setNewItemsLoading] = useState<boolean>(false)
 
-    const onCharsloaded = useCallback(
-        (newChars: MyChar[]) => {
-            let ended = false
-            if (newChars.length < 9) {
-                ended = true
-            }
+    const onCharsloaded = useCallback((newChars: MyChar[]) => {
+        let ended = false
+        if (newChars.length < 9) {
+            ended = true
+        }
 
-            setChars((charsData) => [...charsData, ...newChars])
-            setNewItemsLoading(newItemsLoading)
-            setCurrentOffset(currentOffset + 9)
-            setCharEnded(ended)
-        },
-        [
-            // setChars,
-            // setCurrentOffset,
-            // setCharEnded,
-            // newItemsLoading,
-            // currentOffset,
-        ]
-    )
+        setChars((charsData) => [...charsData, ...newChars])
+        setNewItemsLoading(newItemsLoading)
+        setCurrentOffset(currentOffset + 9)
+        setCharEnded(ended)
+    }, [])
 
     const updateData = useCallback(
         async (initial: boolean, offset = 200) => {
@@ -48,7 +39,7 @@ function CharList({ onCharSelected }: MyProps) {
 
             getAllcharacters(offset).then((result) => {
                 if (result && result !== null) {
-                    onCharsloaded(result)
+                    onCharsloaded(result.data.results.map(transformCharacter))
                 }
             })
         },

@@ -1,7 +1,28 @@
-import { ICharactor, MyChar, IMainCharactorInfo } from 'type/types'
+import {
+    ICharactor,
+    MyChar,
+    IMainCharactorInfo,
+    IMainComicsInfo,
+    IDataComics,
+} from 'type/types'
 import { getLeadingCommentRanges } from 'typescript'
 
 import { useHttp } from '../hooks/http.hook'
+
+export function transformCharacter(
+    result: IMainCharactorInfo | IMainComicsInfo
+): MyChar {
+    const char = result
+    return {
+        id: char.id,
+        name: char.name,
+        description: char.description,
+        thumbnail: `${char.thumbnail.path}.${char.thumbnail.extension}`,
+        homepage: char.urls[0].url,
+        wiki: char.urls[1].url,
+        comics: char.comics,
+    }
+}
 
 const useMarvelService = () => {
     const { loading, request, error, clearError } = useHttp()
@@ -12,38 +33,30 @@ const useMarvelService = () => {
 
     const charOffset = 200
 
-    // const getResource = async (url: string): Promise<ICharactor> => {
-    //     const result = await fetch(url)
+    const comicsOffset = 100
 
-    //     if (!result.ok) {
-    //         throw new Error(`Couldn't fetch ${url}, status ${result.status}`)
-    //     }
-
-    //     const data: Promise<ICharactor> = result.json()
-
-    //     return data
-    // }
-
-    function transformCharacter(result: IMainCharactorInfo): MyChar {
-        const char = result
-        return {
-            id: char.id,
-            name: char.name,
-            description: char.description,
-            thumbnail: `${char.thumbnail.path}.${char.thumbnail.extension}`,
-            homepage: char.urls[0].url,
-            wiki: char.urls[1].url,
-            comics: char.comics,
-        }
-    }
-
-    const getAllcharacters = async (offset: number = charOffset) => {
+    const getAllcharacters = async (
+        offset: number = charOffset
+    ): Promise<ICharactor | null> => {
         const url = `${apiBase}/characters?limit=9&&offset=${offset}&${apiKey}`
 
         const res = await request(url)
 
         if (res) {
-            return res.data.results.map(transformCharacter)
+            return res as ICharactor
+        }
+        return null
+    }
+
+    const getAllComics = async (
+        offset: number = comicsOffset
+    ): Promise<IDataComics | null> => {
+        const url = `${apiBase}/comics?limit=8&&offset=${offset}&${apiKey}`
+
+        const res = await request(url)
+
+        if (res) {
+            return res as IDataComics
         }
         return null
     }
@@ -68,6 +81,13 @@ const useMarvelService = () => {
         return null
     }
 
-    return { loading, error, getAllcharacters, getOneCharacter, clearError }
+    return {
+        loading,
+        error,
+        getAllcharacters,
+        getOneCharacter,
+        clearError,
+        getAllComics,
+    }
 }
 export default useMarvelService

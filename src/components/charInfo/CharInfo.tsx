@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './charInfo.scss'
 import { MyChar, IComicsItem } from 'type/types'
-import MarvelService from 'services/MarvelService'
+import useMarvelService from 'services/MarvelService'
 import ErrorMessage from '../errorMessage/ErrorMessage'
 import Spinner from '../spinner/Spinner'
 import Sceleon from '../skeleton/Skeleton'
@@ -62,7 +62,7 @@ type MyProps = {
 }
 
 function CharInfo({ charId }: MyProps) {
-    const marvelData = new MarvelService()
+    const { error, loading, getOneCharacter, clearError } = useMarvelService()
     const [char, setChar] = useState<MyChar>({
         id: charId,
         name: '',
@@ -77,41 +77,21 @@ function CharInfo({ charId }: MyProps) {
             returned: 0,
         },
     })
-    const [loading, setLoading] = useState<boolean>(false)
-    const [error, setError] = useState<boolean>(false)
-
-    // componentDidUpdate(prevProps: MyProps) {
-    //     const { charId } = this.props
-    //     if (charId !== prevProps.charId) {
-    //         this.updateChar()
-    //     }
-    // }
-
-    const onError = () => {
-        setLoading(true)
-        setError(true)
-    }
 
     const onCharLoaded = (newchar: MyChar) => {
         setChar(newchar)
-        setLoading(false)
-    }
-
-    const onCharLoading = () => {
-        setLoading(false)
     }
 
     const updateChar = () => {
         if (!charId) {
             return
         }
-        onCharLoading()
-        marvelData
-            .getOneCharacter(charId)
-            .then((result) => {
-                onCharLoaded(result)
-            })
-            .catch(onError)
+        clearError()
+        getOneCharacter(charId).then((result) => {
+            if (result && result !== null) {
+                onCharLoaded(result[0])
+            }
+        })
     }
 
     useEffect(() => {
