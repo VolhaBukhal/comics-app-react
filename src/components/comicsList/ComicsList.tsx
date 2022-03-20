@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import './comicsList.scss'
 import xMen from 'assets/img/x-men.png'
 import { MyChar, IDataComics, IMainComicsInfo } from 'type/types'
@@ -14,17 +15,6 @@ function ComicsList() {
     const [currentOffset, setCurrentOffset] = useState<number>(100)
     const [charEnded, setCharEnded] = useState<boolean>(false)
     const [newItemsLoading, setNewItemsLoading] = useState<boolean>(false)
-
-    // useEffect(() => {
-    //     fetch(
-    //         'https://gateway.marvel.com:443/v1/public/comics?limit=8&offset=100&apikey=49fb4240a3b93c08e343b4f177e3690a'
-    //     )
-    //         .then((res): Promise<IDataComics> => res.json())
-    //         .then((res) => {
-    //             console.log(res.data.results)
-    //             setComics(res.data.results)
-    //         })
-    // }, [])
 
     const onComicsLoaded = useCallback((newComics: IMainComicsInfo[]) => {
         let ended = false
@@ -64,8 +54,8 @@ function ComicsList() {
                 item.thumbnail.path.indexOf('image_not_available') !== -1
             )
             return (
-                <li key={item.id} className="comics__item">
-                    <a href={item.resourceURI}>
+                <li key={i} className="comics__item">
+                    <Link to={`/comics/${item.id}`}>
                         <img
                             src={`${item.thumbnail.path}.${item.thumbnail.extension}`}
                             alt={item.title}
@@ -80,7 +70,7 @@ function ComicsList() {
                         <div className="comics__item-price">
                             {item.prices[0].price}$
                         </div>
-                    </a>
+                    </Link>
                 </li>
                 // <li
                 //     key={item.id}

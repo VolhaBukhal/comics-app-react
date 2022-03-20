@@ -18,6 +18,7 @@ function MainPage() {
                 <RandomChar />
             </ErrorBoundary>
             <div className="char__content">
+                <CharList onCharSelected={onCharSelected} />
                 <ErrorBoundary>
                     <CharInfo charId={selectedChar} />
                 </ErrorBoundary>

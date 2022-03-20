@@ -1,7 +1,9 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import { MainPage, ComicsPage } from 'components/pages'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { MainPage, ComicsPage, Page404 } from 'components/pages'
 import AppHeader from './components/appHeader/AppHeader'
+
+import SingleComic from './components/singleComic'
 
 function App() {
     return (
@@ -9,14 +11,15 @@ function App() {
             <div className="app">
                 <AppHeader />
                 <main>
-                    <Switch>
-                        <Route path="/" exact>
-                            <MainPage />
-                        </Route>
-                        <Route path="/comics" exact>
-                            <ComicsPage />
-                        </Route>
-                    </Switch>
+                    <Routes>
+                        <Route path="/" element={<MainPage />} />
+                        <Route path="/comics" element={<ComicsPage />} />
+                        <Route
+                            path="/comics/:comicId"
+                            element={<SingleComic />}
+                        />
+                        <Route path="*" element={<Page404 />} />
+                    </Routes>
                 </main>
             </div>
         </Router>
