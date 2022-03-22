@@ -17,7 +17,7 @@ function CharList({ onCharSelected }: MyProps) {
     const [charEnded, setCharEnded] = useState<boolean>(false)
     const [newItemsLoading, setNewItemsLoading] = useState<boolean>(false)
 
-    const onCharsloaded = useCallback((newChars: MyChar[]) => {
+    const onCharsloaded = useCallback(async (newChars: MyChar[]) => {
         let ended = false
         if (newChars.length < 9) {
             ended = true

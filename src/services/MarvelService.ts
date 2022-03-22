@@ -4,6 +4,7 @@ import {
     IMainCharactorInfo,
     IMainComicsInfo,
     IDataComics,
+    MyComic,
 } from 'type/types'
 import { getLeadingCommentRanges } from 'typescript'
 
@@ -21,6 +22,21 @@ export function transformCharacter(
         homepage: char.urls[0].url,
         wiki: char.urls[1].url,
         comics: char.comics,
+    }
+}
+
+export function transformComic(result: IMainComicsInfo): MyComic {
+    const comic = result
+    return {
+        id: comic.id,
+        title: comic.title,
+        description: comic.description || 'There is no description',
+        pageCount: comic.pageCount
+            ? `${comic.pageCount} p.`
+            : 'No information about the number of pages',
+        thumbnail: `${comic.thumbnail.path}.${comic.thumbnail.extension}`,
+        language: comic.textObjects.language || 'en-us',
+        price: comic.prices[0].price,
     }
 }
 
@@ -61,6 +77,15 @@ const useMarvelService = () => {
         return null
     }
 
+    const getOneComic = async (id: number): Promise<IDataComics | null> => {
+        const url = `${apiBase}/comics/${id}?${apiKey}`
+        const res = await request(url)
+        if (res) {
+            return res as IDataComics
+        }
+        return null
+    }
+
     const getAllData = async () => {
         const url = `${apiBase}/characters?limit=5&&offset=202&${apiKey}`
         const res = await request(url)
@@ -88,6 +113,7 @@ const useMarvelService = () => {
         getOneCharacter,
         clearError,
         getAllComics,
+        getOneComic,
     }
 }
 export default useMarvelService
