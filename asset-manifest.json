@@ -1,16 +1,26 @@
 {
   "files": {
-    "main.css": "/comics-app-react/static/css/main.0a285998.css",
-    "main.js": "/comics-app-react/static/js/main.394c9305.js",
+    "main.css": "/comics-app-react/static/css/main.c6ee6397.css",
+    "main.js": "/comics-app-react/static/js/main.f5a79bf7.js",
+    "static/js/995.8b785659.chunk.js": "/comics-app-react/static/js/995.8b785659.chunk.js",
+    "static/css/534.5eeb2b08.chunk.css": "/comics-app-react/static/css/534.5eeb2b08.chunk.css",
+    "static/js/534.bc94d3ca.chunk.js": "/comics-app-react/static/js/534.bc94d3ca.chunk.js",
+    "static/css/454.1062a233.chunk.css": "/comics-app-react/static/css/454.1062a233.chunk.css",
+    "static/js/454.6aa445ad.chunk.js": "/comics-app-react/static/js/454.6aa445ad.chunk.js",
     "static/media/vision.png": "/comics-app-react/static/media/vision.067d4ae1936d64a577ce.png",
     "static/media/mjolnir.png": "/comics-app-react/static/media/mjolnir.61f31e1809f12183a524.png",
     "static/media/error.gif": "/comics-app-react/static/media/error.42292aa12b6bc303ce99.gif",
     "index.html": "/comics-app-react/index.html",
-    "main.0a285998.css.map": "/comics-app-react/static/css/main.0a285998.css.map",
-    "main.394c9305.js.map": "/comics-app-react/static/js/main.394c9305.js.map"
+    "main.c6ee6397.css.map": "/comics-app-react/static/css/main.c6ee6397.css.map",
+    "main.f5a79bf7.js.map": "/comics-app-react/static/js/main.f5a79bf7.js.map",
+    "995.8b785659.chunk.js.map": "/comics-app-react/static/js/995.8b785659.chunk.js.map",
+    "534.5eeb2b08.chunk.css.map": "/comics-app-react/static/css/534.5eeb2b08.chunk.css.map",
+    "534.bc94d3ca.chunk.js.map": "/comics-app-react/static/js/534.bc94d3ca.chunk.js.map",
+    "454.1062a233.chunk.css.map": "/comics-app-react/static/css/454.1062a233.chunk.css.map",
+    "454.6aa445ad.chunk.js.map": "/comics-app-react/static/js/454.6aa445ad.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.0a285998.css",
-    "static/js/main.394c9305.js"
+    "static/css/main.c6ee6397.css",
+    "static/js/main.f5a79bf7.js"
   ]
 }

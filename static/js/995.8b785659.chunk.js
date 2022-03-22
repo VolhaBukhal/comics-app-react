@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkcomics_app_react=self.webpackChunkcomics_app_react||[]).push([[995],{930:function(e,t,n){var c=n(212);t.Z=c.Z},995:function(e,t,n){n.r(t);n(791);var c=n(504),r=n(930),i=n(184);t.default=function(){return(0,i.jsxs)("div",{children:[(0,i.jsx)(r.Z,{}),(0,i.jsx)("p",{style:{textAlign:"center",fontSize:"2rem"},children:"Page doesn't exist"}),(0,i.jsx)(c.rU,{to:"/",style:{display:"block",textAlign:"center",fontSize:"2rem",marginTop:"3rem",color:"red"},children:"Back to main page"})]})}}}]);
+//# sourceMappingURL=995.8b785659.chunk.js.map
